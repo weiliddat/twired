@@ -4,16 +4,24 @@
   "description": "Separate function definitions and runtime calls using a variety of runtime executors",
   "main": "dist/lib/wired.js",
   "scripts": {
-    "test": "vitest"
+    "test": "jest",
+    "coverage": "jest --coverage"
   },
   "author": "Chiawei <ongchiawei@gmail.com>",
   "license": "ISC",
   "devDependencies": {
+    "@babel/core": "^7.24.3",
+    "@babel/plugin-proposal-decorators": "^7.24.1",
+    "@babel/preset-env": "^7.24.3",
+    "@babel/preset-typescript": "^7.24.1",
+    "@jest/globals": "^29.7.0",
     "@tsconfig/node18": "^18.2.3",
     "@tsconfig/strictest": "^2.0.4",
+    "@types/node": "^18.19.26",
+    "babel-jest": "^29.7.0",
+    "jest": "^29.7.0",
     "prettier": "^3.2.5",
     "ts-node": "^10.9.2",
-    "typescript": "^5.4.3",
-    "vitest": "^1.4.0"
+    "typescript": "^5.4.3"
   }
 }

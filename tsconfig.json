@@ -1,8 +1,8 @@
 {
+  "include": ["lib/**/*"],
   "extends": ["@tsconfig/strictest/tsconfig", "@tsconfig/node18/tsconfig"],
-  "include": ["*.ts", "lib/wired.ts"],
-  "exclude": ["*.test.ts"],
   "compilerOptions": {
-    "outDir": "dist"
+    "outDir": "dist",
+    "declaration": true,
   }
 }
