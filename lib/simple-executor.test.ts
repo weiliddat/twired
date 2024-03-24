@@ -15,12 +15,12 @@ class TestExecutor implements Executor {
 
 class TestWiredWorkflow extends Wired {
   @dispatch
-  async foo(a: string, b: number) {
+  async foo(_a: string, _b: number) {
     return;
   }
 
   @dispatchAwait
-  async bar(a: number, b: string) {
+  async bar(_a: number, _b: string) {
     return 0;
   }
 }
