@@ -13,13 +13,7 @@ class TestExecutor implements Executor {
   call = executorCallFn;
 }
 
-class TestWiredWorkflow implements Wired {
-  executor: Executor;
-
-  constructor(executor: Executor) {
-    this.executor = executor;
-  }
-
+class TestWiredWorkflow extends Wired {
   @dispatch
   async foo(a: string, b: number) {
     return;
@@ -31,7 +25,7 @@ class TestWiredWorkflow implements Wired {
   }
 }
 
-describe("Wired", () => {
+describe("Simple executor", () => {
   test("dispatch decorators should call the executor's call method and returns void", async () => {
     const testExecutor = new TestExecutor();
     const testWiredWorkflow = new TestWiredWorkflow(testExecutor);

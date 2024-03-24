@@ -9,6 +9,12 @@ export function dispatch<This extends Wired, Args extends any[]>(
   originalMethod: Fn<This, Args, void>,
   context: ClassMethodDecoratorContext<This, Fn<This, Args, void>>
 ): Fn<This, Args, void> {
+  context.addInitializer(function () {
+    if (this.executor?.register) {
+      this.executor?.register(originalMethod, this, context);
+    }
+  });
+
   async function callMethod(this: This, ...args: Args): Promise<void> {
     await this.executor.call(originalMethod, args, this, context);
   }
@@ -27,6 +33,12 @@ export function dispatchAwait<This extends Wired, Args extends any[], Result>(
   originalMethod: Fn<This, Args, Result>,
   context: ClassMethodDecoratorContext<This, Fn<This, Args, Result>>
 ): Fn<This, Args, Result> {
+  context.addInitializer(function () {
+    if (this.executor.register) {
+      this.executor.register(originalMethod, this, context);
+    }
+  });
+
   async function callMethod(this: This, ...args: Args): Promise<Result> {
     return this.executor.call(originalMethod, args, this, context);
   }
@@ -37,11 +49,27 @@ export function dispatchAwait<This extends Wired, Args extends any[], Result>(
 }
 
 /**
- * A class implementing Wired can use decorated methods \@dispatch and
+ * A base class implementing HasExecutor is the only thing required
+ * for the decorators \@dispatch and \@dispatchAwait to work
+ *
+ * With the current behavior of decorators and initializers, you
+ * will need to use a child class that calls super(), otherwise
+ * `this.executor` will not be available for the initializer
+ */
+export interface HasExecutor {
+  executor: Executor;
+}
+
+/**
+ * A class extending Wired can use decorated methods \@dispatch and
  * \@dispatchAwait to delegate function calls to the executor
  */
-export interface Wired {
+export class Wired implements HasExecutor {
   executor: Executor;
+
+  constructor(executor: Executor) {
+    this.executor = executor;
+  }
 }
 
 /**
@@ -49,6 +77,15 @@ export interface Wired {
  * \@dispatchAwait to intercept and process function calls
  */
 export interface Executor {
+  /**
+   * setup execution context
+   */
+  register?<This extends Wired, Args extends any[], Result>(
+    fn: Fn<This, Args, Result>,
+    fnThis: This,
+    fnContext: ClassMethodDecoratorContext<This, Fn<This, Args, Result>>
+  ): void;
+
   /**
    * handle decorated function call
    */
