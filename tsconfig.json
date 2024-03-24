@@ -1,0 +1,8 @@
+{
+  "extends": "@tsconfig/node18/tsconfig.json",
+  "include": ["*.ts", "lib/wired.ts"],
+  "exclude": ["*.test.ts"],
+  "compilerOptions": {
+    "outDir": "dist"
+  }
+}

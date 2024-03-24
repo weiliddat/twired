@@ -1,14 +1,15 @@
 {
   "name": "wiring",
-  "version": "1.0.0",
+  "version": "0.1.0",
   "description": "Separate function definitions and runtime calls using a variety of runtime executors",
-  "main": "index.js",
+  "main": "dist/lib/wired.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "vitest"
   },
   "author": "Chiawei <ongchiawei@gmail.com>",
   "license": "ISC",
   "devDependencies": {
+    "@tsconfig/node18": "^18.2.3",
     "eslint": "^8.57.0",
     "prettier": "^3.2.5",
     "ts-node": "^10.9.2",
