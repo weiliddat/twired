@@ -10,3 +10,16 @@ Let the runtime wire up your code for you.
 - Inspired by [this paper](https://sigops.org/s/conferences/hotos/2023/papers/ghemawat.pdf) / event loops / rust's async_executor / python's celery
 - Easy to migrate, unlike trying to retool/refactor to a durable execution runtime or job system
 - Advanced executors could have fallbacks to local execution, or on-the-fly adjustment of where to execute code depending on resource usage or desired durability requirements
+
+## Usage
+
+## Example
+
+## TODOs
+
+- [ ] Error types / cases
+- [ ] Thread/worker example
+- [ ] Redis example
+- [ ] MQ example
+- [ ] Executor with options example
+  - [ ] MQ executor enforces each decorated method needs a distinct queue name
