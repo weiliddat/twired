@@ -8,6 +8,11 @@
   },
   "author": "Chiawei Ong <ongchiawei@gmail.com>",
   "license": "MIT",
+  "files": [
+    "lib",
+    "package.json",
+    "readme.md"
+  ],
   "devDependencies": {
     "@babel/core": "^7.24.3",
     "@babel/plugin-proposal-decorators": "^7.24.1",
