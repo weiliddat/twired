@@ -1,6 +1,6 @@
 {
   "name": "twired",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Separate function definitions and runtime calls using a variety of runtime executors",
   "main": "dist/lib/twired.js",
   "scripts": {
