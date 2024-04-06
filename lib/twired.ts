@@ -61,7 +61,7 @@ export interface HasExecutor {
 }
 
 /**
- * A class extending Wired can use decorated methods \@dispatch and
+ * A class extending Twired can use decorated methods \@dispatch and
  * \@dispatchAwait to delegate function calls to the executor
  */
 export class Twired implements HasExecutor {
