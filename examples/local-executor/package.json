@@ -1,0 +1,16 @@
+{
+  "name": "twired-examples-local-executor",
+  "version": "0.0.0",
+  "description": "",
+  "main": "example.ts",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "Chiawei Ong <ongchiawei@gmail.com>",
+  "license": "MIT",
+  "dependencies": {
+    "ts-node": "^10.9.2",
+    "twired": "file:../.."
+  }
+}

@@ -2,13 +2,15 @@
 
 When a codebase evolves to make use of distributed computing, they often have to change how code is written and structured. What used to be a simple function call is turned into `createTask`, `runTask`, `collectTask` calls, often split up into different directories and utilities.
 
-This makes your codebase increasingly hard to understand, slow to debug, and difficult to develop. When you have hundreds of `createTask`, `runTask`, and `collectTask` calls, that's when you'll look to a framework or different system for answers.
-
-However, most of these systems require a lengthy migration process, to rewrite and migrate your currently running tasks into a new system.
+This makes your codebase increasingly hard to understand, slow to debug, and difficult to develop. You probably adopt different systems or services for different characteristics and guarantees, multiplying the surface area for developers to understand — hundreds of `createTask`, `sendMessage`, `startJob`, each probably using the same (hopefully?) underlying functions nested deep inside wrapped calls and workers.
 
 This library is written as an answer to this problem.
 
-Get back the experience of writing simple function calls with semantic clarity and type safety. Use your existing jobs, queues, messages. Use your existing deploy pipeline.
+Experience again writing simple function calls with semantic clarity and type safety.
+
+Port your existing job systems, message queues, run times to an executor you can write in an afternoon. Re-use all of your existing infrastructure, and test them side-by-side!
+
+Run the same functions with different guarantees and characteristics depending on the environment and needs!
 
 ## Summary
 
@@ -27,24 +29,47 @@ Get back the experience of writing simple function calls with semantic clarity a
 4. use / write an executor to run the decorated functions
 5. until decorators are accepted into Ecmascript, you will need a transpiler, e.g. babel / typescript
 
-### Example using a local executor ([file](examples/local-executor/example.ts))
+## Examples
+
+Each of the directories in [examples](examples/) are executable.
+
+Check out each of their readmes!
+
+1. [Local Executor](examples/local-executor/) (this is a minimal example wrapping a regular local function call)
+2. [Redis Executor](examples/redis-executor/) (this is an example which support different dispatch and dispatchAwait calls, and separating calling and running functions)
 
 ```ts
-import { Twired, dispatchAwait } from "../../lib/twired";
-import { LocalExecutor } from "./local-executor";
+import { Twired, dispatch, dispatchAwait } from "twired";
 
 class Greeter extends Twired {
+  @dispatch
+  async greet(recipient: string) {
+    const person = await getPerson(recipient);
+    const message = await this.generateGreeting(person.name);
+    await this.sendGreeting(recipient, message);
+  }
+
   @dispatchAwait
-  async sayHello(name: string) {
+  async generateGreeting(name: string) {
     return `Hello ${name}`;
+  }
+
+  @dispatch
+  async sendGreeting(recipient: string, message: string) {
+    const messageId = await sendEmail(recipient, message);
+    await this.saveMessage(messageId);
+  }
+
+  @dispatch
+  async saveMessage(messageId: string) {
+    await saveEvent(messageId);
   }
 }
 
 async function main() {
-  const localExecutor = new LocalExecutor();
-  const greeter = new Greeter(localExecutor);
-  const greeting = await greeter.sayHello("world");
-  assert.equal(greeting, "Hello foo");
+  const executor = new RedisExecutor();
+  const greeter = new Greeter(executor);
+  const greeting = await greeter.greet("jane@example.com");
 }
 ```
 
@@ -58,7 +83,9 @@ These decorators wrap functions and allow executors to execute them.
 
 `dispatchAwait` is meant for function calls where you expect a response, e.g. an API server recevies a request, wants to offload processing to a different machine / thread, and receive a result to create a response.
 
-You will notice the distinction is arbitrary. You can technically use `dispatchAwait` for all calls, even for those without a response. I find it useful to make this explicit to understand the decorated function's behavior at a glance. Executors can also make use of this distinction to optimize wrapped calls, e.g. an executor using messages can make `dispatch` calls return when a message is acknowledged; an "unsafe" executor can even immediately return `dispatch` calls without waiting for the queue to acknowledge the message.
+You will notice the distinction is arbitrary. You can technically use `dispatchAwait` for all calls, even for those without a response. I find it useful to make this explicit to understand the decorated function's behavior at a glance.
+
+Executors can also make use of this distinction to optimize wrapped calls, e.g. an executor using messages can make `dispatch` calls return when a message is acknowledged without waiting for the result; an "unsafe" executor can even immediately return `dispatch` calls without waiting for the queue to acknowledge the message.
 
 ### Executors
 
@@ -78,7 +105,7 @@ You can also implement the interface `HasExecutor`, or even avoid all of it if y
 
 - [ ] Error types / cases
 - [ ] Thread/worker example
-- [ ] Redis example
+- [x] Redis example
 - [ ] MQ example
 - [ ] Executor with options example
   - [ ] MQ executor enforces each decorated method needs a distinct queue name
