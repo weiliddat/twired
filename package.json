@@ -1,12 +1,12 @@
 {
-  "name": "wiring",
+  "name": "twired",
   "version": "0.1.0",
   "description": "Separate function definitions and runtime calls using a variety of runtime executors",
-  "main": "dist/lib/wired.js",
+  "main": "dist/lib/twired.js",
   "scripts": {
     "test": "tsc --noEmit && jest --coverage"
   },
-  "author": "Chiawei <ongchiawei@gmail.com>",
+  "author": "Chiawei Ong <ongchiawei@gmail.com>",
   "license": "ISC",
   "devDependencies": {
     "@babel/core": "^7.24.3",

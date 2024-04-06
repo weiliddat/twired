@@ -5,7 +5,7 @@ export const OriginalMethodSymbol = Symbol("originalMethod");
  * any values, useful for jobs that are processed with
  * their own side effects.
  */
-export function dispatch<This extends Wired, Args extends any[]>(
+export function dispatch<This extends Twired, Args extends any[]>(
   originalMethod: Fn<This, Args, void>,
   context: ClassMethodDecoratorContext<This, Fn<This, Args, void>>
 ): Fn<This, Args, void> {
@@ -29,7 +29,7 @@ export function dispatch<This extends Wired, Args extends any[]>(
  * just like a regular function call.
  * Some executors might intentionally not support returning a result.
  */
-export function dispatchAwait<This extends Wired, Args extends any[], Result>(
+export function dispatchAwait<This extends Twired, Args extends any[], Result>(
   originalMethod: Fn<This, Args, Result>,
   context: ClassMethodDecoratorContext<This, Fn<This, Args, Result>>
 ): Fn<This, Args, Result> {
@@ -64,7 +64,7 @@ export interface HasExecutor {
  * A class extending Wired can use decorated methods \@dispatch and
  * \@dispatchAwait to delegate function calls to the executor
  */
-export class Wired implements HasExecutor {
+export class Twired implements HasExecutor {
   executor: Executor;
 
   constructor(executor: Executor) {
@@ -80,7 +80,7 @@ export interface Executor {
   /**
    * setup execution context
    */
-  register?<This extends Wired, Args extends any[], Result>(
+  register?<This extends Twired, Args extends any[], Result>(
     fn: Fn<This, Args, Result>,
     fnThis: This,
     fnContext: ClassMethodDecoratorContext<This, Fn<This, Args, Result>>
@@ -89,7 +89,7 @@ export interface Executor {
   /**
    * handle decorated function call
    */
-  call<This extends Wired, Args extends any[], Result>(
+  call<This extends Twired, Args extends any[], Result>(
     fn: Fn<This, Args, Result>,
     args: Args,
     fnThis: This,
@@ -100,7 +100,7 @@ export interface Executor {
 /**
  * type util for decorated functions
  */
-export type Fn<This extends Wired, Args extends any[], Result> = (
+export type Fn<This extends Twired, Args extends any[], Result> = (
   this: This,
   ...args: Args
 ) => Promise<Result>;

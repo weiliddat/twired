@@ -1,10 +1,10 @@
 import {
   Executor,
   OriginalMethodSymbol,
-  Wired,
+  Twired,
   dispatch,
   dispatchAwait,
-} from "./wired";
+} from "./twired";
 import { jest, describe, test, expect } from "@jest/globals";
 
 const executorCallFn = jest.fn<any>();
@@ -13,7 +13,7 @@ class TestExecutor implements Executor {
   call = executorCallFn;
 }
 
-class TestWiredWorkflow extends Wired {
+class TestWiredWorkflow extends Twired {
   @dispatch
   async foo(_a: string, _b: number) {
     return;

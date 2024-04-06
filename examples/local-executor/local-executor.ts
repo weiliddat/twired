@@ -1,11 +1,11 @@
-import { Executor, Fn, Wired } from "../../lib/wired";
+import { Executor, Fn, Twired } from "../../lib/twired";
 
 /**
  * An example of an executor that calls the wrapped function like
  * a normal function
  */
 export class LocalExecutor implements Executor {
-  call<This extends Wired, Args extends any[], Result>(
+  call<This extends Twired, Args extends any[], Result>(
     fn: Fn<This, Args, Result>,
     args: Args,
     fnThis: This

@@ -1,8 +1,8 @@
 import assert from "node:assert";
-import { Wired, dispatchAwait } from "../../lib/wired";
+import { Twired, dispatchAwait } from "../../lib/twired";
 import { LocalExecutor } from "./local-executor";
 
-class Greeter extends Wired {
+class Greeter extends Twired {
   @dispatchAwait
   async sayHello(name: string) {
     return `Hello ${name}`;
