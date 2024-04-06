@@ -1,6 +1,6 @@
 {
   "name": "twired",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "description": "Separate function definitions and runtime calls using a variety of runtime executors",
   "main": "lib/twired.ts",
   "repository": "https://github.com/weiliddat/twired",
