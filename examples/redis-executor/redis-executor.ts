@@ -1,6 +1,7 @@
 import { createClient } from "@redis/client";
 import { RedisClientOptions } from "@redis/client/dist/lib/client";
 import { DecoratorType, Executor, Fn, Twired } from "twired";
+import { deserialize, serialize } from "v8";
 
 interface RedisExecutorOpts {
   redisOpts: RedisClientOptions;
@@ -84,7 +85,7 @@ export class RedisExecutor implements Executor {
 
     // save arguments, for demonstration purposes we're using redis itself
     const argumentId = `callArgs.${key}.${callId}`;
-    await client.set(argumentId, JSON.stringify(args));
+    await client.set(argumentId, serialize(args).toString("base64"));
 
     // notify worker about call
     await client.lPush(key, callId);
@@ -111,7 +112,7 @@ export class RedisExecutor implements Executor {
     }
 
     console.log(`${this.machineId} Returning call for ${key}`);
-    return JSON.parse(result);
+    return deserialize(Buffer.from(result, "base64"));
   }
 
   /**
@@ -149,12 +150,12 @@ export class RedisExecutor implements Executor {
       }
 
       // parse and apply arguments
-      const parsedArgs = JSON.parse(args);
+      const parsedArgs = deserialize(Buffer.from(args, "base64"));
       const result = (await fn.apply(fnThis, parsedArgs)) ?? null;
 
       // save results
       const resultId = `callResult.${key}.${callId.element}`;
-      await client.set(resultId, JSON.stringify(result));
+      await client.set(resultId, serialize(result).toString("base64"));
 
       // notify worker
       const responseId = `${key}.${callId.element}`;
