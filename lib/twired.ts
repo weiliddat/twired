@@ -11,12 +11,12 @@ export function dispatch<This extends Twired, Args extends any[]>(
 ): Fn<This, Args, void> {
   context.addInitializer(function () {
     if (this.executor?.register) {
-      this.executor?.register(originalMethod, this, context);
+      this.executor?.register(originalMethod, this, context, "dispatch");
     }
   });
 
   async function callMethod(this: This, ...args: Args): Promise<void> {
-    await this.executor.call(originalMethod, args, this, context);
+    await this.executor.call(originalMethod, args, this, context, "dispatch");
   }
 
   callMethod[OriginalMethodSymbol] = originalMethod;
@@ -35,12 +35,18 @@ export function dispatchAwait<This extends Twired, Args extends any[], Result>(
 ): Fn<This, Args, Result> {
   context.addInitializer(function () {
     if (this.executor.register) {
-      this.executor.register(originalMethod, this, context);
+      this.executor.register(originalMethod, this, context, "dispatchAwait");
     }
   });
 
   async function callMethod(this: This, ...args: Args): Promise<Result> {
-    return this.executor.call(originalMethod, args, this, context);
+    return this.executor.call(
+      originalMethod,
+      args,
+      this,
+      context,
+      "dispatchAwait"
+    );
   }
 
   callMethod[OriginalMethodSymbol] = originalMethod;
@@ -72,6 +78,8 @@ export class Twired implements HasExecutor {
   }
 }
 
+export type DecoratorType = "dispatch" | "dispatchAwait";
+
 /**
  * A class implementing Executor is used by decorated methods \@dispatch and
  * \@dispatchAwait to intercept and process function calls
@@ -83,7 +91,8 @@ export interface Executor {
   register?<This extends Twired, Args extends any[], Result>(
     fn: Fn<This, Args, Result>,
     fnThis: This,
-    fnContext: ClassMethodDecoratorContext<This, Fn<This, Args, Result>>
+    fnContext: ClassMethodDecoratorContext<This, Fn<This, Args, Result>>,
+    decoratorType: DecoratorType
   ): void;
 
   /**
@@ -93,7 +102,8 @@ export interface Executor {
     fn: Fn<This, Args, Result>,
     args: Args,
     fnThis: This,
-    fnContext: ClassMethodDecoratorContext<This, Fn<This, Args, Result>>
+    fnContext: ClassMethodDecoratorContext<This, Fn<This, Args, Result>>,
+    decoratorType: "dispatch" | "dispatchAwait"
   ): Promise<Result>;
 }
 
