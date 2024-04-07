@@ -1,3 +1,6 @@
+[![codecov](https://codecov.io/gh/weiliddat/twired/graph/badge.svg?token=40FS0VCEPL)](https://codecov.io/gh/weiliddat/twired)
+![NPM Version](https://img.shields.io/npm/v/twired)
+
 # Twired
 
 - Separate business logic and runtime concerns.
