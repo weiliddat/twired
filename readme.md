@@ -37,6 +37,7 @@ Check out each of their readmes!
 
 1. [Local Executor](examples/local-executor/) (this is a minimal example wrapping a regular local function call)
 2. [Redis Executor](examples/redis-executor/) (this is an example which support different dispatch and dispatchAwait calls, and separating calling and running functions)
+3. [MQ Executor](examples/mq-executor/) (an example showcasing only dispatch type calls, validating executor configuration, and resuming of jobs)
 
 ```ts
 import { Twired, dispatch, dispatchAwait } from "twired";
