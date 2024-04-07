@@ -1,9 +1,10 @@
 import { createClient } from "@redis/client";
 import { RedisClientOptions } from "@redis/client/dist/lib/client";
 import { DecoratorType, Executor, Fn, Twired } from "twired";
+import { getFnKey } from "twired/utils";
 import { deserialize, serialize } from "v8";
 
-interface RedisExecutorOpts {
+export interface RedisExecutorOpts {
   redisOpts: RedisClientOptions;
   mode: ExecutionMode;
   machineId: string;
@@ -42,10 +43,10 @@ export class RedisExecutor implements Executor {
    * each function
    * Also starts the processing function to respond to decorated calls
    */
-  async register<This extends Twired, Args extends any[], Result>(
+  register<This extends Twired, Args extends any[], Result>(
     fn: Fn<This, Args, Result>,
     fnThis: This
-  ): Promise<void> {
+  ) {
     const key = getFnKey(fnThis, fn);
     const fnClient = createClient(this.redisOpts)
       .on("error", (err) => console.error(err))
@@ -58,7 +59,7 @@ export class RedisExecutor implements Executor {
      * work
      */
     if (this.mode !== ExecutionMode.CallOnly) {
-      void this.startProcessing(key, fn, fnThis);
+      this.startProcessing(key, fn, fnThis);
     }
   }
 
@@ -174,14 +175,4 @@ export class RedisExecutor implements Executor {
     const callId = await client.incr(`callId.${name}`);
     return callId.toString();
   }
-}
-
-/**
- * Helper function to return class and function name as a key
- */
-function getFnKey(fnThis: ThisType<Twired>, fn: CallableFunction): string {
-  const className = fnThis.constructor.name;
-  const methodName = String(fn.name);
-  const key = `${className}.${methodName}`;
-  return key;
 }

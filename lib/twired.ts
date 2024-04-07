@@ -113,4 +113,6 @@ export interface Executor {
 export type Fn<This extends Twired, Args extends any[], Result> = (
   this: This,
   ...args: Args
-) => Promise<Result>;
+) => Promise<Result>;/**
+ * Helper function to return class and function name as a key
+ */
