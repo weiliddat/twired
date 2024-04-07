@@ -1,8 +1,18 @@
+# Twired
+
+- Separate business logic and runtime concerns.
+- Tiny (< 5kb) library with 0 dependencies.
+- Write distributed code that look and feel like regular code.
+- Easy to migrate — just write an executor adapting your current job/queue/task system. Doable in an afternoon!
+- Swap out executors in different environments for different behaviors and guarantees.
+
 ## Problem Statement
 
 When a codebase evolves to make use of distributed computing, they often have to change how code is written and structured. What used to be a simple function call is turned into `createTask`, `runTask`, `collectTask` calls, often split up into different directories and utilities.
 
-This makes your codebase increasingly hard to understand, slow to debug, and difficult to develop. You probably adopt different systems or services for different characteristics and guarantees, multiplying the surface area for developers to understand — hundreds of `createTask`, `sendMessage`, `startJob`, each probably using the same (hopefully?) underlying functions nested deep inside wrapped calls and workers.
+This makes your codebase hard to understand, slow to debug, and difficult to develop.
+
+You probably even adopt different systems or services for different characteristics and guarantees, multiplying the surface area for developers to understand — hundreds of `createTask`, `sendMessage`, `startJob`, each probably using the same (hopefully?) underlying functions nested deep inside wrapped calls and workers.
 
 This library is written as an answer to this problem.
 
@@ -10,16 +20,7 @@ Experience again writing simple function calls with semantic clarity and type sa
 
 Port your existing job systems, message queues, run times to an executor you can write in an afternoon. Re-use all of your existing infrastructure, and test them side-by-side!
 
-Run the same functions with different guarantees and characteristics depending on the environment and needs!
-
-## Summary
-
-- This is a pattern to separate business logic and runtime logic.
-- This repo provides some sample executors, but they could (should) be replaced by anything that is interface compatible depending on your runtime needs. Use bull / agenda / messages / celery / temporal / whatever as your backend and easily switch them out!
-- Makes use of metaprogramming via [decorators](https://2ality.com/2022/10/javascript-decorators.html)
-- Inspired by [this paper](https://sigops.org/s/conferences/hotos/2023/papers/ghemawat.pdf) / event loops / rust's async_executor / python's celery
-- Easy to migrate — just write an executor compatible with your current job/queue/task system — unlike trying to retool/refactor to a different durable execution runtime or job system
-- Advanced executors could have fallbacks to local execution, or on-the-fly adjustment of where to execute code depending on resource usage or desired durability requirements
+Run the same functions with different guarantees and characteristics depending on the environment and your needs!
 
 ## Usage
 
@@ -76,7 +77,9 @@ async function main() {
 
 ## Concepts
 
-### `dispatch` and `dispatchAwait` decorators
+Inspired by [this paper](https://sigops.org/s/conferences/hotos/2023/papers/ghemawat.pdf)
+
+### `dispatch` and `dispatchAwait` [decorators](https://2ality.com/2022/10/javascript-decorators.html)
 
 These decorators wrap functions and allow executors to execute them.
 
@@ -88,6 +91,10 @@ You will notice the distinction is arbitrary. You can technically use `dispatchA
 
 Executors can also make use of this distinction to optimize wrapped calls, e.g. an executor using messages can make `dispatch` calls return when a message is acknowledged without waiting for the result; an "unsafe" executor can even immediately return `dispatch` calls without waiting for the queue to acknowledge the message.
 
+**Why decorators?**
+
+Decorators for this use case strike a good balance of transprency (it's obvious that this method is not a regular function call) and lack-of-clutter. You can easily follow function calls without having to jump through higher order functions or different runners/workers.
+
 ### Executors
 
 The `Executor` interface defines how an executor deals with `dispatch` and `dispatchAwait` decorated functions.
@@ -95,6 +102,8 @@ The `Executor` interface defines how an executor deals with `dispatch` and `disp
 Executors are expected to implement at least the `call` method, which represents how it deals with a function call from the decorators.
 
 Executors can implement `register`, which will be called on decorator initialization. At the moment, this is the method used by executors to do anything outside of the function call, such as validate options per function call (e.g. needing a specified queue per decorated function), subscribing to whatever run time job/message system, processing work, routing, etc.
+
+Advanced executors could have fallbacks to local execution, or on-the-fly adjustment of where to execute code depending on resource usage or desired durability requirements.
 
 ### Twired
 
@@ -107,6 +116,6 @@ You can also implement the interface `HasExecutor`, or even avoid all of it if y
 - [ ] Error types / cases
 - [ ] Thread/worker example
 - [x] Redis example
-- [ ] MQ example
-- [ ] Executor with options example
-  - [ ] MQ executor enforces each decorated method needs a distinct queue name
+- [x] MQ example
+- [x] Executor with options example
+  - [x] MQ executor enforces each decorated method needs a distinct queue name
