@@ -1,5 +1,6 @@
 {
-  "include": ["**/*.ts"],
+  "include": ["./lib/*.ts"],
+  "exclude": ["./lib/*.test.ts"],
   "compilerOptions": {
     "strict": true,
     "allowUnusedLabels": false,
@@ -23,6 +24,7 @@
     "moduleResolution": "node16",
 
     "outDir": "dist",
-    "declaration": true
+    "declaration": true,
+    "removeComments": true
   }
 }

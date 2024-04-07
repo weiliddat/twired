@@ -9,7 +9,7 @@
   },
   "repository": "https://github.com/weiliddat/twired",
   "scripts": {
-    "test": "tsc --noEmit && jest --coverage"
+    "test": "tsc --noEmit && jest --coverage ./lib/*.test.ts"
   },
   "author": "Chiawei Ong <ongchiawei@gmail.com>",
   "license": "MIT",
