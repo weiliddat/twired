@@ -35,7 +35,8 @@ describe("Executor that requires an initializer for setup", () => {
     expect(executorRegisterFn).toHaveBeenCalledWith(
       (testWiredWorkflow.foo as any)[OriginalMethodSymbol],
       testWiredWorkflow,
-      expect.anything()
+      expect.anything(),
+      "dispatch"
     );
 
     const result = await testWiredWorkflow.foo("a", 2);
@@ -44,7 +45,8 @@ describe("Executor that requires an initializer for setup", () => {
       (testWiredWorkflow.foo as any)[OriginalMethodSymbol],
       ["a", 2],
       testWiredWorkflow,
-      expect.anything()
+      expect.anything(),
+      "dispatch"
     );
 
     expect(result).toBeUndefined();
@@ -61,7 +63,8 @@ describe("Executor that requires an initializer for setup", () => {
       (testWiredWorkflow.bar as any)[OriginalMethodSymbol],
       [4, "2"],
       testWiredWorkflow,
-      expect.anything()
+      expect.anything(),
+      "dispatchAwait"
     );
 
     expect(result).toBe(42);

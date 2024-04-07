@@ -36,7 +36,8 @@ describe("Simple executor", () => {
       (testWiredWorkflow.foo as any)[OriginalMethodSymbol],
       ["a", 2],
       testWiredWorkflow,
-      expect.anything()
+      expect.anything(),
+      "dispatch"
     );
 
     expect(result).toBeUndefined();
@@ -53,7 +54,8 @@ describe("Simple executor", () => {
       (testWiredWorkflow.bar as any)[OriginalMethodSymbol],
       [4, "2"],
       testWiredWorkflow,
-      expect.anything()
+      expect.anything(),
+      "dispatchAwait"
     );
 
     expect(result).toBe(42);
