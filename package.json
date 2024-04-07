@@ -1,6 +1,6 @@
 {
   "name": "twired",
-  "version": "0.1.4",
+  "version": "0.1.5",
   "description": "Separate function definitions and runtime calls using a variety of runtime executors",
   "main": "lib/twired.ts",
   "exports": {
