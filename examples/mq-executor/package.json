@@ -1,5 +1,5 @@
 {
-  "name": "twired-examples-redis-executor",
+  "name": "twired-examples-mq-executor",
   "version": "0.0.0",
   "description": "",
   "main": "example.ts",
@@ -10,7 +10,7 @@
   "author": "Chiawei Ong <ongchiawei@gmail.com>",
   "license": "MIT",
   "dependencies": {
-    "@redis/client": "^1.5.14",
+    "@aws-sdk/client-sqs": "^3.549.0",
     "ts-node": "^10.9.2",
     "twired": "file:../.."
   }
